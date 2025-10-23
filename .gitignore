@@ -1,0 +1,5 @@
+.vercel
+.env.local
+faiss_index
+node_modules
+.env
