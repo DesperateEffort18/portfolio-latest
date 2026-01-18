@@ -1,13 +1,14 @@
 import 'dotenv/config';
 import { Pinecone } from '@pinecone-database/pinecone';
-import { GoogleGenAI } from '@google/genai';
+import OpenAI from 'openai';
 import { portfolioData } from './portfolio-data.js';
 
 // Initialize clients
 const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
-const index = pinecone.index('portfolio-rag');
+const indexName = process.env.PINECONE_INDEX_NAME || 'portfolio-rag';
+const index = pinecone.index(indexName);
 
-const genAI = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function splitText(text, maxLength = 500) {
 	if (!text) return [];
@@ -49,7 +50,7 @@ async function main() {
 	});
 
 	// 'Education' section
-	portfolioData.education.forEach(edu => {
+	(portfolioData.education || []).forEach(edu => {
 		chunks.push({
 			text: `Aditya's education includes a ${edu.degree} from ${edu.school}, with details: ${edu.details}.`,
 			source: 'Education'
@@ -57,8 +58,8 @@ async function main() {
 	});
 
 	// 'Experience' section
-	portfolioData.experience.forEach(exp => {
-		const description = `Regarding the role of ${exp.role} at ${exp.company}, key responsibilities and achievements include: ${exp.desc.join(' ')}`;
+	(portfolioData.experience || []).forEach(exp => {
+		const description = `Aditya Rakshit's work experience includes the role of ${exp.role} at ${exp.company}. Key responsibilities and achievements include: ${exp.desc.join(' ')}`;
 		splitText(description).forEach(chunk => {
 			chunks.push({
 				text: chunk,
@@ -68,9 +69,9 @@ async function main() {
 	});
 
 	// 'Projects' section
-	portfolioData.projects.forEach(proj => {
+	(portfolioData.projects || []).forEach(proj => {
 		const cleanDescription = proj.desc.map(d => d.replace(/<[^>]*>/g, '')).join(' ');
-		const text = `Regarding the project "${proj.name}", which uses technologies like ${proj.tech}, the details are: ${cleanDescription}`;
+		const text = `Aditya Rakshit's project "${proj.name}", built using ${proj.tech}, is described as follows: ${cleanDescription}`;
 		splitText(text).forEach(chunk => {
 			chunks.push({
 				text: chunk,
@@ -80,9 +81,9 @@ async function main() {
 	});
 
 	// 'Leadership' section
-	portfolioData.leadership.forEach(lead => {
+	(portfolioData.leadership || []).forEach(lead => {
 		const points = lead.points.join(' ');
-		const text = `In the leadership role of ${lead.role} at ${lead.org}, key accomplishments include: ${points}`;
+		const text = `Aditya Rakshit's leadership experience includes the role of ${lead.role} at ${lead.org}. Key accomplishments include: ${points}`;
 		splitText(text).forEach(chunk => {
 			chunks.push({
 				text: chunk,
@@ -92,7 +93,7 @@ async function main() {
 	});
 
 	// 'Certifications' section
-	portfolioData.certifications.forEach(cert => {
+	(portfolioData.certifications || []).forEach(cert => {
 		chunks.push({
 			text: `Aditya holds the certification: "${cert.name}" from ${cert.issuer}.`,
 			source: 'Certifications'
@@ -100,7 +101,7 @@ async function main() {
 	});
 
 	// 'Talks' section
-	portfolioData.talks.forEach(talk => {
+	(portfolioData.talks || []).forEach(talk => {
 		chunks.push({
 			text: `Aditya gave a talk titled "${talk.title}" at ${talk.venue}.`,
 			source: 'Talks & Lectures'
@@ -108,13 +109,13 @@ async function main() {
 	});
 
 	// 'Skills' section
-	for (const category in portfolioData.skills) {
+	for (const category in (portfolioData.skills || {})) {
 		const text = `In the category "${category}", Aditya has the following skills: ${portfolioData.skills[category].join(', ')}.`;
 		chunks.push({ text: text, source: 'Skills' });
 	}
 
 	// 'Languages' section
-	const languageString = portfolioData.languages.map(l => `${l.lang} (${l.proficiency})`).join(', ');
+	const languageString = (portfolioData.languages || []).map(l => `${l.lang} (${l.proficiency})`).join(', ');
 	chunks.push({
 		text: `Aditya speaks the following languages: ${languageString}.`,
 		source: 'Languages'
@@ -141,17 +142,17 @@ async function main() {
 		const chunk = validChunks[i];
 		try {
 			console.log(`Embedding chunk ${i + 1}/${validChunks.length}: "${chunk.text.substring(0, 70)}..."`);
-			const result = await genAI.models.embedContent({
-				model: "gemini-embedding-001",
-				contents: chunk.text,
-				config: { taskType: "RETRIEVAL_DOCUMENT", outputDimensionality: 768 }
+			const result = await openai.embeddings.create({
+				model: "text-embedding-3-small",
+				input: chunk.text,
+				dimensions: 1024
 			});
 
-			console.log("Fetch success: ", result.embeddings[0])
+			console.log("Fetch success: ", result.data[0].embedding)
 
 			allVectors.push({
 				id: `doc-${i}`,
-				values: result.embeddings[0].values,
+				values: result.data[0].embedding,
 				metadata: { text: chunk.text, source: chunk.source },
 			});
 

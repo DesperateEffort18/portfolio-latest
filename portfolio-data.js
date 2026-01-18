@@ -5,7 +5,7 @@ export const portfolioData = {
     education: [
         { school: "University of Massachusetts Amherst", degree: "Bachelors of Science in Computer Science, Bachelor of Arts in Economics", details: "Expected May 2027 | GPA: 3.91/4.0" },
     ],
-    experience:[
+    experience: [
         {
             role: "AI Intern – Alxcelerate Program",
             company: "USEReady",
@@ -15,7 +15,7 @@ export const portfolioData = {
                 "Delivered an executive-level AI solution pitch demonstrating applied LLM orchestration, prompt engineering, and measurable business ROI.",
                 "Completed 80+ hours of training in AI agent development, cloud-based deployment (AWS), and enterprise AI applications."
             ]
-        
+
         }
     ],
     projects: [
@@ -48,8 +48,7 @@ export const portfolioData = {
         { role: "Member", org: "Massachusetts AI", period: "2025 - Present", points: ["Engaged in machine learning lectures and hands-on projects to deepen technical expertise in AI.", "Participated in AI-focused workshops and collaborative learning sessions."] },
         { role: "Travel Team Member", org: "UMass Club Tennis", period: "2024 - Present", points: ["Represented UMass in intercollegiate tournaments as part of the Club Tennis travel team.", "Contributed to competitive success through dedicated practice and team collaboration."] }
     ],
-    contact: { e
-        : "adityarakshit18@gmail.com", linkedin: "https://www.linkedin.com/in/aditya-rakshit-0b2738296/", github: "https://github.com/DesperateEffort18" },
+    contact: { email: "adityarakshit18@gmail.com", linkedin: "https://www.linkedin.com/in/aditya-rakshit-0b2738296/", github: "https://github.com/DesperateEffort18" },
     skills: {
         "Languages": ["Java", "Python", "C/C++", "JavaScript", "TypeScript"],
         "Frameworks": ["React", "Node.js", "Angular"],
