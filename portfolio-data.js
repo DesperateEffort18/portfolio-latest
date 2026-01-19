@@ -28,7 +28,7 @@ export const portfolioData = {
                 "<strong>Action:</strong> Engineered a data pipeline to scrape and structure 100+ course listings, integrating ChatGPT API to interpret queries and generate personalized recommendations.",
                 "<strong>Result:</strong> Created an interactive, user-friendly dashboard that streamlines course selection and enhances student decision-making."
             ],
-            url: "https://github.com/DesperateEffort18"
+            url: "https://github.com/DesperateEffort18/Course-Recommender"
         },
         {
             name: "MinuteMacros",
@@ -40,7 +40,19 @@ export const portfolioData = {
                 "<strong>Result:</strong> Achieved 50+ active users in one semester and gained campus recognition for promoting healthier eating habits."
             ],
             url: "https://github.com/DesperateEffort18/UmassCalorieTracker.py"
+        },
+        {
+            name: "UMass Lends",
+            tech: "React, Next.js, TypeScript, Supabase, PostgreSQL, CSS, OpenAI API",
+            date: "September 2025 – November 2025",
+            desc: [
+                "<strong>Problem:</strong> UMass students frequently purchased items they only needed temporarily, leading to unnecessary spending and waste.",
+                "<strong>Action:</strong> Built a secure peer-to-peer lending platform with Supabase authentication, PostgreSQL row-level security, image uploads, real-time messaging, and an AI-powered recommendation system using the OpenAI GPT-4o-mini API to suggest relevant items based on academic events.",
+                "<strong>Result:</strong> Enabled 100+ users to borrow and lend campus items, reduced unnecessary purchases by 35%, and increased user engagement by 20% through a responsive, intuitive frontend."
+            ],
+            url: "https://github.com/DesperateEffort18/umass_lends"
         }
+
     ],
     talks: [],
     leadership: [

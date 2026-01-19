@@ -99,17 +99,27 @@ export default async function handler(req, res) {
                 console.log(`   Text: ${match.metadata?.text?.substring(0, 100)}...`);
             });
 
-            const context = queryResponse.matches.map(match => match.metadata.text).join('\n\n');
+            const context = queryResponse.matches.map(match => `[Source: ${match.metadata.source}]\n${match.metadata.text}`).join('\n\n');
 
             // 4. Construct the system prompt with context
             const systemPrompt = `
         You are an AI assistant for Aditya Rakshit's portfolio.
-        Use the following pieces of context to answer the question at the end.
-        If you don't know the answer from the context, just say that you don't have that information.
-
-        Context:
+        You have access to the following specific context about Aditya:
+        ---
         ${context}
-      `;
+        ---
+
+        Your goal is to answer the user's question helpfully and accurately.
+        1. Pay close attention to the '[Source: ...]' tag of each context piece.
+        2. If the user asks about "projects", prioritize information labeled '[Source: Project: ...]'.
+        3. If the user asks about "experience" or "jobs", prioritize information labeled '[Source: Experience: ...]'.
+        4. Distinguish clearly between valid projects and work experience. Only classify something as a "Project" if it comes from a Project source.
+        5. ALWAYS prioritize the specific context provided above when answering questions about Aditya, his projects, experience, or skills.
+        6. If the user asks a question that is NOT fully answered by the context, use your general knowledge.
+        7. Only say "I don't have that information" if the question is about a specific private detail regarding Aditya that is NOT in the context.
+        
+        Be friendly, professional, and concise.
+        `;
 
             // 5. Generate and stream the response
             const stream = await openai.chat.completions.create({
