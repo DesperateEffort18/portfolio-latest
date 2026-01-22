@@ -69,10 +69,14 @@ async function main() {
 	});
 
 	// 'Projects' section
+	console.log(`Processing ${(portfolioData.projects || []).length} projects...`);
 	(portfolioData.projects || []).forEach(proj => {
+		console.log(`Processing project: ${proj.name}`);
 		const cleanDescription = proj.desc.map(d => d.replace(/<[^>]*>/g, '')).join(' ');
 		const text = `Aditya Rakshit's project "${proj.name}", built using ${proj.tech}, is described as follows: ${cleanDescription}`;
-		splitText(text).forEach(chunk => {
+		const projectChunks = splitText(text);
+		console.log(`   -> Generated ${projectChunks.length} chunks for ${proj.name}`);
+		projectChunks.forEach(chunk => {
 			chunks.push({
 				text: chunk,
 				source: `Project: ${proj.name}`
@@ -151,7 +155,7 @@ async function main() {
 			console.log("Fetch success: ", result.data[0].embedding)
 
 			allVectors.push({
-				id: `doc-${i}`,
+				id: `portfolio-v2-doc-${i}`,
 				values: result.data[0].embedding,
 				metadata: { text: chunk.text, source: chunk.source },
 			});

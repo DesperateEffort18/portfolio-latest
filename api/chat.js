@@ -88,7 +88,7 @@ export default async function handler(req, res) {
             // 3. Retrieve relevant documents from Pinecone
             const queryResponse = await index.query({
                 vector: embedding,
-                topK: 4,
+                topK: 15,
                 includeMetadata: true,
             });
 
@@ -109,16 +109,16 @@ export default async function handler(req, res) {
         ${context}
         ---
 
-        Your goal is to answer the user's question helpfully and accurately.
-        1. Pay close attention to the '[Source: ...]' tag of each context piece.
-        2. If the user asks about "projects", prioritize information labeled '[Source: Project: ...]'.
-        3. If the user asks about "experience" or "jobs", prioritize information labeled '[Source: Experience: ...]'.
-        4. Distinguish clearly between valid projects and work experience. Only classify something as a "Project" if it comes from a Project source.
-        5. ALWAYS prioritize the specific context provided above when answering questions about Aditya, his projects, experience, or skills.
-        6. If the user asks a question that is NOT fully answered by the context, use your general knowledge.
-        7. Only say "I don't have that information" if the question is about a specific private detail regarding Aditya that is NOT in the context.
+        Your goal is to answer the user's question helpfully and accurately by synthesizing the context above.
         
-        Be friendly, professional, and concise.
+        Guidelines:
+        1. **Prioritize Context**: Use the provided context as your primary source of truth.
+        2. **Be Flexible**: If the user asks for a list (e.g., "all projects", "skills"), compile the most complete list possible from the available chunks, even if some details are brief.
+        3. **Projects vs Experience**: While "Projects" and "Experience" are distinct, if a user asks broadly about "work" or "what he has done", you can mention both. valid projects often have '[Source: Project: ...]' but feel free to infer from the text if it describes a built application.
+        4. **General Knowledge**: If the context doesn't fully answer the question (e.g., "What is React?"), use your general knowledge to explain the concepts mentioned in the credentials.
+        5. **Avoid Refusals**: Try to answer the question to the best of your ability with the information present. Only say "I don't know" if the information is completely absent and cannot be reasonably inferred.
+        
+        Be friendly, enthusiastic, and professional.
         `;
 
             // 5. Generate and stream the response

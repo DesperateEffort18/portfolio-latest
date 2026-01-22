@@ -20,18 +20,19 @@ async function debugRetrieval(query) {
 
     const queryResponse = await index.query({
         vector: embedding,
-        topK: 5,
+        topK: 15,
         includeMetadata: true,
     });
 
     console.log(`Found ${queryResponse.matches.length} matches.`);
     queryResponse.matches.forEach((match, i) => {
-        console.log(`\nMatch ${i + 1}: Score ${match.score}`);
-        console.log(`Source: ${match.metadata?.source}`);
-        console.log(`Text: ${match.metadata?.text?.substring(0, 150)}...`);
+        const textSnippet = match.metadata?.text?.substring(0, 50).replace(/\n/g, ' ') || 'No text';
+        console.log(`[${i + 1}] Score: ${match.score.toFixed(4)} | Source: ${match.metadata?.source} | Text: ${textSnippet}...`);
     });
 }
 
 // Run debug for specific problematic queries
 await debugRetrieval("what are his most recent projects");
-await debugRetrieval("what are his projects");
+await debugRetrieval("MinuteMacros");
+await debugRetrieval("UMass AI Course Recommender");
+await debugRetrieval("UMass Lends");
